@@ -1,0 +1,119 @@
+Your program:
+
+    Creates 5 threads that calculate the sum of two integers.
+    Uses thread attributes to define scheduling policy and detach state.
+    Cancels Thread 3 after 1 second.
+    Joins all threads and prints whether they completed successfully or were canceled.
+
+Explaining ??????????? Sections
+1️⃣ typedef struct { ... } ThreadArgs;
+
+👉 Purpose:
+This structure stores arguments (two numbers and the thread ID) to be passed to the thread function.
+
+👉 Why?
+
+    Since pthread_create() only accepts void* arguments, we wrap multiple values into a struct.
+    This allows us to pass multiple arguments to the thread function.
+
+2️⃣ void* calculate_sum(void* args) { ... }
+
+👉 Purpose:
+This is the thread function, which:
+
+    Converts the argument from void* to ThreadArgs*.
+    Enables thread cancellation (pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);).
+    Sets cancellation type to deferred (pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);).
+    Prints the calculation.
+    Sleeps for 2 seconds (to simulate processing time).
+    Exits, returning the sum.
+
+👉 Why?
+
+    Cancellation is enabled so that pthread_cancel() can terminate the thread.
+    Deferred cancellation ensures the thread can only be canceled at safe points (e.g., during sleep()).
+    sleep(2) allows time for the main thread to cancel one of the threads before it completes.
+
+3️⃣ pthread_attr_init(&attr);
+
+👉 Purpose:
+Initializes the pthread_attr_t structure, which stores attributes like scheduling policy and detach state.
+
+👉 Why?
+
+    Needed before setting thread attributes.
+    Ensures we don't use an uninitialized attribute object.
+
+4️⃣ pthread_attr_setschedpolicy(&attr, SCHED_FIFO);
+
+👉 Purpose:
+Sets the scheduling policy of the threads to FIFO (First In, First Out).
+
+👉 Why?
+
+    In FIFO scheduling, threads are executed in order of their priority and are not preempted by lower-priority threads.
+    This is useful for real-time systems.
+
+⚠️ Note: Setting scheduling policy requires root privileges (sudo), or it will fail.
+5️⃣ pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
+
+👉 Purpose:
+Ensures that threads are joinable, meaning they do not release resources automatically when they finish.
+
+👉 Why?
+
+    Joinable threads allow the main program to retrieve their exit status using pthread_join().
+    If the threads were created as detached, they would clean up themselves, making pthread_join() unnecessary.
+
+6️⃣ pthread_create(&threads[i], &attr, calculate_sum, (void*)&args[i]);
+
+👉 Purpose:
+Creates a new thread that executes calculate_sum(), passing in the thread arguments.
+
+👉 Why?
+
+    Each thread gets a unique ThreadArgs struct with different numbers and IDs.
+    If pthread_create() fails, an error message is printed.
+
+7️⃣ sleep(1); printf("Main: Canceling thread 3\n"); pthread_cancel(threads[2]);
+
+👉 Purpose:
+
+    The main thread sleeps for 1 second to allow some threads to start their work.
+    Then, it cancels thread 3 (index 2 in the array).
+
+👉 Why?
+
+    pthread_cancel() requests cancellation of threads[2], but since cancellation is deferred, it will happen only at the next cancellation point (e.g., during sleep(2) in calculate_sum()).
+
+8️⃣ pthread_join(threads[i], &status);
+
+👉 Purpose:
+Waits for each thread to complete and retrieves its exit status.
+
+👉 Why?
+
+    Ensures proper cleanup of resources.
+    Checks if the thread was canceled (PTHREAD_CANCELED).
+    If the thread completed, prints its return value.
+
+9️⃣ pthread_attr_destroy(&attr);
+
+👉 Purpose:
+
+    Destroys the thread attribute object, freeing up memory.
+
+👉 Why?
+
+    Good practice to clean up allocated attributes after thread creation.
+
+📌 Summary of Important Concepts
+Function	Purpose	Why Use It?
+pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);	Allows thread cancellation	Enables safe termination by pthread_cancel()
+pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);	Cancels thread only at specific points	Prevents abrupt termination in critical sections
+pthread_attr_init(&attr);	Initializes thread attributes	Required before setting scheduling properties
+pthread_attr_setschedpolicy(&attr, SCHED_FIFO);	Sets scheduling policy to FIFO	Controls execution priority (requires root privileges)
+pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);	Makes threads joinable	Allows retrieval of return values via pthread_join()
+pthread_create(&threads[i], &attr, calculate_sum, (void*)&args[i]);	Creates a new thread	Runs a function in parallel
+pthread_cancel(threads[2]);	Cancels thread 3	Demonstrates cancellation in action
+pthread_join(threads[i], &status);	Waits for thread completion	Ensures proper cleanup
