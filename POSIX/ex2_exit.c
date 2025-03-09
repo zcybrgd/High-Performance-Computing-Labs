@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <pthread.h>
-#include <stdint.h>  // Include this for intptr_t
+#include <stdint.h>  
 
 #define SIZE 100000000 // Taille du tableau
 #define NUM_THREADS 4  // Nombre de threads
@@ -29,7 +29,7 @@ int main() {
     }
 
     pthread_t threads[NUM_THREADS];
-    ThreadArgs args[NUM_THREADS]; // Use NUM_THREADS instead of num_threads
+    ThreadArgs args[NUM_THREADS]; 
     int chunk_size = SIZE / NUM_THREADS;
 
     clock_t start = clock();

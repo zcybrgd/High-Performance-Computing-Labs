@@ -28,7 +28,7 @@ int main() {
         array[i] = i;
     }
 
-    // Version parallèle
+   
     pthread_t threads[NUM_THREADS];
     ThreadData threadData[NUM_THREADS];
 

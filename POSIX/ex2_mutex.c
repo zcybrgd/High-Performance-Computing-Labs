@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <pthread.h>
-#include <stdint.h>  // Include this for intptr_t
+#include <stdint.h>  
 
 #define SIZE 100000000 // Taille du tableau
 #define NUM_THREADS 4  // Nombre de threads
@@ -13,8 +13,8 @@ typedef struct {
     int start, end;
 } ThreadArgs;
 
-long long sum = 0; // Variable partagée
-pthread_mutex_t mutex; // Mutex pour protéger sum
+long long sum = 0; 
+pthread_mutex_t mutex; // Mutex pour  sum
 
 void *sumArrayParallel(void* args) {
     ThreadArgs* argument = (ThreadArgs*)args;
@@ -41,7 +41,7 @@ int main() {
     ThreadArgs args[NUM_THREADS];
     int chunk_size = SIZE / NUM_THREADS;
 
-    pthread_mutex_init(&mutex, NULL); // Initialisation du mutex
+    pthread_mutex_init(&mutex, NULL); // Initialisation 
 
     clock_t start = clock();
     for (int i = 0; i < NUM_THREADS; i++) {
@@ -61,7 +61,7 @@ int main() {
     printf("Somme parallèle: %lld\n", sum);
     printf("Temps parallèle: %f secondes\n", time_parallel);
 
-    pthread_mutex_destroy(&mutex); // Destruction du mutex
+    pthread_mutex_destroy(&mutex); // Destruction 
     free(array);
     return 0;
 }
