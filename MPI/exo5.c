@@ -44,3 +44,5 @@ int main(int argc, char *argv[]) {
     MPI_Finalize();
     return 0;
 }
+//pour assurer la communication entre plusieurs communicateurs
+// le comm principale endo les mm processus (il a pas change apres split) donc ils ont des processus en commun
