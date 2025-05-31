@@ -33,4 +33,4 @@ long long sumOfSquaresSequential(int* array, int size) {
     return total;
 }
 
-//lets turn it parallel : once with reduction, once  with criticial, once with  atomic and explain the code 
+//lets turn it parallel : once with reduction, once  with criticial, once with  atomic and 
