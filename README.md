@@ -1,6 +1,6 @@
 # High-Performance-Computing-Labs
 
-sharing my practical implementations and experiments in High-Performance Computing lab sessions (HPC). 
+sharing our practical implementations and experiments in High-Performance Computing lab sessions (HPC). 
 
 it includes exercises, demonstrations, and comparisons of different parallelization strategies to build a solid understanding of HPC fundamentals from the HPC course we take in second semester of our first masters year in ESI Alger.
 
